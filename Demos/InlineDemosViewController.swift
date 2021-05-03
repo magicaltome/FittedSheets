@@ -15,7 +15,7 @@ class InlineDemosViewController: UIViewController {
     @IBOutlet var containerView: UIView!
     @IBOutlet var stackViewBottomConstraint: NSLayoutConstraint!
     
-    var demos: [(UIViewController & Demoable).Type] = [
+    var demos: [(UIViewController & Demoable).Type] = [TomeDemo.self] + [
         OnlyCloseWithButtonDemo.self,
         ResizingDemo.self,
         NavigationDemo.self,
