@@ -9,11 +9,16 @@ class TomeDemo: UIViewController, Demoable {
 
         let viewController = FakeViewController()
 
+        var dismissButtonImage: UIImage?
+        if #available(iOS 13.0, *) {
+            dismissButtonImage = UIImage(systemName: "xmark.circle")
+        }
         let options = SheetOptions(
             shouldExtendBackground: false,
             useFullScreenMode: false,
             shrinkPresentingViewController: true,
-            useInlineMode: useInlineMode
+            useInlineMode: useInlineMode,
+            dismissButtonImage: dismissButtonImage
         )
         let sheetViewController = SheetViewController(controller: viewController,
                                                       sizes: [.percent(0.5), .fullscreen],
@@ -25,6 +30,12 @@ class TomeDemo: UIViewController, Demoable {
             sheetViewController.minimumSpaceAbovePullBar = (view?.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 40.0) + 8.0
         }
         sheetViewController.pullBarBackgroundColor = .darkGray
+        sheetViewController.titleBarBackgroundColor = .darkGray
+        sheetViewController.attributedTitle = NSAttributedString(string: "A B C D E F G A B C D E F G A B C D E F G A B C D E F G A B C D E F G A B C D E F G ",
+                                                                 attributes: [
+                                                                    .foregroundColor: UIColor.white,
+                                                                    .font: UIFont.systemFont(ofSize: 18)
+                                                                 ])
         sheetViewController.contentBackgroundColor = .darkGray
         sheetViewController.overlayColor = .clear
 

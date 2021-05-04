@@ -18,6 +18,11 @@ public struct SheetOptions {
         case none
         case automatic
     }
+
+    public var titleBarHeight: CGFloat = 44.0
+    public var titleBarHorizontalPadding: CGFloat = 16.0
+    public var dismissButtonSize = CGSize(width: 24, height: 24)
+    public var dismissButtonImage: UIImage?
     
     public var pullBarHeight: CGFloat = 24
     
@@ -67,7 +72,12 @@ public struct SheetOptions {
                 shrinkPresentingViewController: Bool? = nil,
                 useInlineMode: Bool? = nil,
                 horizontalPadding: CGFloat? = nil,
-                maxWidth: CGFloat? = nil) {
+                maxWidth: CGFloat? = nil,
+                titleBarHeight: CGFloat? = nil,
+                titleBarHorizontalPadding: CGFloat? = nil,
+                dismissButtonSize: CGSize? = nil,
+                dismissButtonImage: UIImage? = nil
+                ) {
         let defaultOptions = SheetOptions.default
         self.pullBarHeight = pullBarHeight ?? defaultOptions.pullBarHeight
         self.presentingViewCornerRadius = presentingViewCornerRadius ?? defaultOptions.presentingViewCornerRadius
@@ -79,6 +89,11 @@ public struct SheetOptions {
         self.horizontalPadding = horizontalPadding ?? defaultOptions.horizontalPadding
         let maxWidth = maxWidth ?? defaultOptions.maxWidth
         self.maxWidth = maxWidth == 0 ? nil : maxWidth
+        self.titleBarHeight = titleBarHeight ?? defaultOptions.titleBarHeight
+        self.titleBarHorizontalPadding = titleBarHorizontalPadding ?? defaultOptions.titleBarHorizontalPadding
+        self.dismissButtonSize = dismissButtonSize ?? defaultOptions.dismissButtonSize
+        self.dismissButtonImage = dismissButtonImage ?? defaultOptions.dismissButtonImage
+
     }
     
     @available(*, unavailable, message: "cornerRadius, minimumSpaceAbovePullBar, gripSize and gripColor are now properties on SheetViewController. Use them instead.")
