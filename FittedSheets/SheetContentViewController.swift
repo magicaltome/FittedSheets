@@ -152,12 +152,6 @@ public class SheetContentViewController: UIViewController {
         dismissButton.setImage(self.options.dismissButtonImage, for: .normal)
         dismissButton.addTarget(self, action: #selector(dismissButtonTapped(_:)), for: .touchUpInside)
 
-        // DEBUG
-//        titleLabel.backgroundColor = .blue
-//        dismissButton.backgroundColor = .green
-//        titleLabel.text = "TITLE A B C D E F G A B C D E F G A B C D E F G A B C D E F G A B C D E F G A B C D E F G "
-        // DEBUG
-
         self.contentWrapperView.addSubview(self.titleBarView)
         Constraints(for: self.titleBarView) { view in
             view.top.pinToSuperview(inset: self.titleBarViewTopInset)
@@ -170,7 +164,6 @@ public class SheetContentViewController: UIViewController {
         Constraints(for: self.titleLabel) {
             $0.centerY.alignWithSuperview()
             $0.left.pinToSuperview(inset: self.options.titleBarHorizontalPadding)
-//            $0.right.pinToSuperview(inset: self.options.titleBarHorizontalPadding, relation: .lessThanOrEqual)
         }
 
         self.titleBarView.addSubview(self.dismissButton)
