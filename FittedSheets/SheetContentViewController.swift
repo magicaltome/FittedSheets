@@ -54,6 +54,15 @@ public class SheetContentViewController: UIViewController {
             }
         }
     }
+
+    public var titleBarBackgroundColor: UIColor? {
+        get { return self.titleBarView.backgroundColor }
+        set { self.titleBarView.backgroundColor = newValue }
+    }
+    public var attributedTitle: NSAttributedString? {
+        get { return self.titleLabel.attributedText }
+        set { self.titleLabel.attributedText = newValue }
+    }
     
     weak var delegate: SheetContentViewDelegate?
     
@@ -66,6 +75,9 @@ public class SheetContentViewController: UIViewController {
     public var childContainerView = UIView()
     public var pullBarView = UIView()
     public var gripView = UIView()
+    public var titleBarView = UIView()
+    public var titleLabel = UILabel()
+    public var dismissButton = UIButton()
     private let overflowView = UIView()
     
     public init(childViewController: UIViewController, options: SheetOptions) {
@@ -89,6 +101,7 @@ public class SheetContentViewController: UIViewController {
         self.setupContentView()
         self.setupChildContainerView()
         self.setupPullBarView()
+        self.setupTitleBarView()
         self.setupChildViewController()
         self.updatePreferredHeight()
         self.updateCornerRadius()
@@ -125,6 +138,45 @@ public class SheetContentViewController: UIViewController {
     private func updateCornerRadius() {
         self.contentWrapperView.layer.cornerRadius = self.treatPullBarAsClear ? 0 : self.cornerRadius
         self.childContainerView.layer.cornerRadius = self.treatPullBarAsClear ? self.cornerRadius : 0
+    }
+
+    private var titleBarViewTopInset: CGFloat {
+        return (self.options.pullBarHeight + self.gripSize.height) / 2 + 2
+    }
+
+    private func setupTitleBarView() {
+        guard self.options.shouldExtendBackground == false else { return }
+
+        titleBarView.backgroundColor = self.titleBarBackgroundColor
+        titleLabel.attributedText = self.attributedTitle
+        dismissButton.setImage(self.options.dismissButtonImage, for: .normal)
+        dismissButton.addTarget(self, action: #selector(dismissButtonTapped(_:)), for: .touchUpInside)
+
+        self.contentWrapperView.addSubview(self.titleBarView)
+        Constraints(for: self.titleBarView) { view in
+            view.top.pinToSuperview(inset: self.titleBarViewTopInset)
+            view.left.pinToSuperview()
+            view.right.pinToSuperview()
+            view.height.set(self.options.titleBarHeight)
+        }
+
+        self.titleBarView.addSubview(self.titleLabel)
+        Constraints(for: self.titleLabel) {
+            $0.centerY.alignWithSuperview()
+            $0.left.pinToSuperview(inset: self.options.titleBarHorizontalPadding)
+        }
+
+        self.titleBarView.addSubview(self.dismissButton)
+        Constraints(for: self.dismissButton) {
+            $0.centerY.alignWithSuperview()
+            $0.width.set(self.options.dismissButtonSize.width)
+            $0.height.set(self.options.dismissButtonSize.height)
+            $0.right.pinToSuperview(inset: self.options.titleBarHorizontalPadding)
+        }
+
+        NSLayoutConstraint.activate([
+            self.titleLabel.rightAnchor.constraint(lessThanOrEqualTo: self.dismissButton.leftAnchor, constant: -self.options.titleBarHorizontalPadding)
+        ])
     }
     
     private func setupOverflowView() {
@@ -237,7 +289,7 @@ public class SheetContentViewController: UIViewController {
             if self.options.shouldExtendBackground {
                 view.top.pinToSuperview()
             } else {
-                view.top.pinToSuperview(inset: self.options.pullBarHeight)
+                view.top.pinToSuperview(inset: self.titleBarViewTopInset + self.options.titleBarHeight)
             }
             view.left.pinToSuperview()
             view.right.pinToSuperview()
@@ -284,6 +336,10 @@ public class SheetContentViewController: UIViewController {
     
     @objc func pullBarTapped(_ gesture: UITapGestureRecognizer) {
         self.delegate?.pullBarTapped()
+    }
+
+    @objc func dismissButtonTapped(_ button: UIButton) {
+        self.delegate?.dismissButtonTapped()
     }
 }
 

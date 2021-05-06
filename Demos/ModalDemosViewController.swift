@@ -13,7 +13,7 @@ class ModalDemosViewController: UIViewController {
     @IBOutlet var stackView: UIStackView!
     @IBOutlet var scrollView: UIScrollView!
     
-    var demos: [(UIViewController & Demoable).Type] = [
+    var demos: [(UIViewController & Demoable).Type] = [TomeDemo.self] + [
         OnlyCloseWithButtonDemo.self,
         ResizingDemo.self,
         NavigationDemo.self,

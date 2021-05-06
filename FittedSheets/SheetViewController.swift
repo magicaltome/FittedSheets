@@ -126,6 +126,16 @@ public class SheetViewController: UIViewController {
         get { return self.contentViewController.treatPullBarAsClear }
         set { self.contentViewController.treatPullBarAsClear = newValue }
     }
+
+    public static var titleBarBackgroundColor: UIColor = UIColor.clear
+    public var titleBarBackgroundColor: UIColor? {
+        get { return self.contentViewController.titleBarBackgroundColor }
+        set { self.contentViewController.titleBarBackgroundColor = newValue }
+    }
+    public var attributedTitle: NSAttributedString? {
+        get { return self.contentViewController.attributedTitle }
+        set { self.contentViewController.attributedTitle = newValue }
+    }
     
     let transition: SheetTransition
     
@@ -172,6 +182,7 @@ public class SheetViewController: UIViewController {
         self.gripColor = SheetViewController.gripColor
         self.gripSize = SheetViewController.gripSize
         self.pullBarBackgroundColor = SheetViewController.pullBarBackgroundColor
+        self.titleBarBackgroundColor = SheetViewController.titleBarBackgroundColor
         self.cornerRadius = SheetViewController.cornerRadius
         self.updateOrderedSizes()
         self.modalPresentationStyle = .custom
@@ -730,6 +741,10 @@ extension SheetViewController: SheetContentViewDelegate {
         if self.currentSize == .intrinsic, !self.isPanning {
             self.resize(to: .intrinsic)
         }
+    }
+
+    func dismissButtonTapped() {
+        self.attemptDismiss(animated: true)
     }
 }
 
