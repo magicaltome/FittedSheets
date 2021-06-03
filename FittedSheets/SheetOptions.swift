@@ -42,6 +42,7 @@ public struct SheetOptions {
     public var shrinkPresentingViewController = true
     /// Set true to be able to use the sheet view controller as a subview instead of a modal. Defaults to false.
     public var useInlineMode = false
+    public var shouldExpandWhenKeyboardAppears = false
     
     public var horizontalPadding: CGFloat = 0
     public var maxWidth: CGFloat?

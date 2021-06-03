@@ -508,9 +508,17 @@ public class SheetViewController: UIViewController {
     }
     
     private func registerKeyboardObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDismissed(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidDismiss), name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow() {
+        isKeyboardDismissing = false
+        if options.shouldExpandWhenKeyboardAppears {
+            resize(to: .fullscreen)
+        }
     }
     
     @objc func keyboardShown(_ notification: Notification) {
@@ -519,7 +527,6 @@ public class SheetViewController: UIViewController {
         let windowRect = self.view.convert(self.view.bounds, to: nil)
         let actualHeight = windowRect.maxY - keyboardRect.origin.y
         self.adjustForKeyboard(height: actualHeight, from: notification)
-        isKeyboardDismissing = false
     }
     
     @objc func keyboardDismissed(_ notification: Notification) {
