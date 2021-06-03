@@ -37,7 +37,7 @@ public class SheetViewController: UIViewController {
     public private(set) var currentSize: SheetSize = .intrinsic
     
     /// The pan offset divided by the pre-pan sheet height at which to trigger `didPanBeyondThreshold`
-    public var panEventThreshold: CGFloat = 0.25
+    public var panEventThreshold: CGFloat = 1/8
     
     /// Allows dismissing of the sheet by pulling down
     public var dismissOnPull: Bool = true {
@@ -164,7 +164,14 @@ public class SheetViewController: UIViewController {
     private var panOffset: CGFloat = 0
     private var panGestureRecognizer: InitialTouchPanGestureRecognizer!
     private var prePanHeight: CGFloat = 0
-    private var isPanning: Bool = false
+    private var isPanning: Bool = false {
+        didSet {
+            if !isPanning {
+                didCallPanBeyondThresholdForCurrentPan = false
+            }
+        }
+    }
+    private var didCallPanBeyondThresholdForCurrentPan = false
     
     public var contentBackgroundColor: UIColor? {
         get { self.contentViewController.contentBackgroundColor }
@@ -408,8 +415,9 @@ public class SheetViewController: UIViewController {
                     self.transition.setPresentor(percentComplete: percent)
                     self.overlayView.alpha = 1 - percent
                     self.contentViewController.view.transform = CGAffineTransform(translationX: 0, y: offset)
-                    if offset / prePanHeight > panEventThreshold {
+                    if !didCallPanBeyondThresholdForCurrentPan && (offset / prePanHeight > panEventThreshold) {
                         didPanBeyondThreshold?(self)
+                        didCallPanBeyondThresholdForCurrentPan = true
                     }
                 } else {
                     self.contentViewController.view.transform = CGAffineTransform.identity
