@@ -36,8 +36,8 @@ public class SheetViewController: UIViewController {
     public var orderedSizes: [SheetSize] = []
     public private(set) var currentSize: SheetSize = .intrinsic
     
-    /// The pan offset divided by the pre-pan sheet height at which to trigger `didPanBeyondThreshold`
-    public var panEventThreshold: CGFloat = 1/8
+    /// The collapsing direction pan offset at which to trigger `didPanBeyondThreshold`
+    public var panEventThreshold: CGFloat = 12
     
     /// Allows dismissing of the sheet by pulling down
     public var dismissOnPull: Bool = true {
@@ -415,7 +415,7 @@ public class SheetViewController: UIViewController {
                     self.transition.setPresentor(percentComplete: percent)
                     self.overlayView.alpha = 1 - percent
                     self.contentViewController.view.transform = CGAffineTransform(translationX: 0, y: offset)
-                    if !didCallPanBeyondThresholdForCurrentPan && (offset / prePanHeight > panEventThreshold) {
+                    if !didCallPanBeyondThresholdForCurrentPan && (offset > panEventThreshold) {
                         didPanBeyondThreshold?(self)
                         didCallPanBeyondThresholdForCurrentPan = true
                     }
