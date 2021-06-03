@@ -77,7 +77,8 @@ public struct SheetOptions {
                 titleBarHeight: CGFloat? = nil,
                 titleBarHorizontalPadding: CGFloat? = nil,
                 dismissButtonSize: CGSize? = nil,
-                dismissButtonImage: UIImage? = nil
+                dismissButtonImage: UIImage? = nil,
+                shouldExpandWhenKeyboardAppears: Bool? = nil
                 ) {
         let defaultOptions = SheetOptions.default
         self.pullBarHeight = pullBarHeight ?? defaultOptions.pullBarHeight
@@ -94,6 +95,7 @@ public struct SheetOptions {
         self.titleBarHorizontalPadding = titleBarHorizontalPadding ?? defaultOptions.titleBarHorizontalPadding
         self.dismissButtonSize = dismissButtonSize ?? defaultOptions.dismissButtonSize
         self.dismissButtonImage = dismissButtonImage ?? defaultOptions.dismissButtonImage
+        self.shouldExpandWhenKeyboardAppears = shouldExpandWhenKeyboardAppears ?? defaultOptions.shouldExpandWhenKeyboardAppears
 
     }
     
@@ -108,7 +110,8 @@ public struct SheetOptions {
                 useFullScreenMode: Bool? = nil,
                 shrinkPresentingViewController: Bool? = nil,
                 useInlineMode: Bool? = nil,
-                minimumSpaceAbovePullBar: CGFloat? = nil) {
+                minimumSpaceAbovePullBar: CGFloat? = nil,
+                shouldExpandWhenKeyboardAppears: Bool? = nil) {
         let defaultOptions = SheetOptions.default
         self.pullBarHeight = pullBarHeight ?? defaultOptions.pullBarHeight
         self.presentingViewCornerRadius = presentingViewCornerRadius ?? defaultOptions.presentingViewCornerRadius
@@ -117,6 +120,7 @@ public struct SheetOptions {
         self.useFullScreenMode = useFullScreenMode ?? defaultOptions.useFullScreenMode
         self.shrinkPresentingViewController = shrinkPresentingViewController ?? defaultOptions.shrinkPresentingViewController
         self.useInlineMode = useInlineMode ?? defaultOptions.useInlineMode
+        self.shouldExpandWhenKeyboardAppears = shouldExpandWhenKeyboardAppears ?? defaultOptions.shouldExpandWhenKeyboardAppears
     }
 }
 
