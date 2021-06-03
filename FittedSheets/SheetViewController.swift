@@ -171,6 +171,7 @@ public class SheetViewController: UIViewController {
             }
         }
     }
+    private var isKeyboardDismissing = false
     private var didCallPanBeyondThresholdForCurrentPan = false
     
     public var contentBackgroundColor: UIColor? {
@@ -369,6 +370,10 @@ public class SheetViewController: UIViewController {
     }
     
     @objc func panned(_ gesture: UIPanGestureRecognizer) {
+        guard !isKeyboardDismissing else {
+            self.isPanning = false
+            return
+        }
         let point = gesture.translation(in: gesture.view?.superview)
         if gesture.state == .began {
             self.firstPanPoint = point
@@ -505,6 +510,7 @@ public class SheetViewController: UIViewController {
     private func registerKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDismissed(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidDismiss), name: UIResponder.keyboardDidHideNotification, object: nil)
     }
     
     @objc func keyboardShown(_ notification: Notification) {
@@ -513,10 +519,16 @@ public class SheetViewController: UIViewController {
         let windowRect = self.view.convert(self.view.bounds, to: nil)
         let actualHeight = windowRect.maxY - keyboardRect.origin.y
         self.adjustForKeyboard(height: actualHeight, from: notification)
+        isKeyboardDismissing = false
     }
     
     @objc func keyboardDismissed(_ notification: Notification) {
+        isKeyboardDismissing = true
         self.adjustForKeyboard(height: 0, from: notification)
+    }
+    
+    @objc func keyboardDidDismiss() {
+        isKeyboardDismissing = false
     }
     
     private func adjustForKeyboard(height: CGFloat, from notification: Notification) {
