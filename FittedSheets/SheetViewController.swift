@@ -35,6 +35,10 @@ public class SheetViewController: UIViewController {
     }
     public var orderedSizes: [SheetSize] = []
     public private(set) var currentSize: SheetSize = .intrinsic
+    
+    /// The collapsing direction pan offset at which to trigger `didPanBeyondThreshold`
+    public var panEventThreshold: CGFloat = 12
+    
     /// Allows dismissing of the sheet by pulling down
     public var dismissOnPull: Bool = true {
         didSet {
@@ -142,6 +146,7 @@ public class SheetViewController: UIViewController {
     public var shouldDismiss: ((SheetViewController) -> Bool)?
     public var didDismiss: ((SheetViewController) -> Void)?
     public var sizeChanged: ((SheetViewController, SheetSize, CGFloat) -> Void)?
+    public var didPanBeyondThreshold: ((SheetViewController) -> Void)?
     
     public private(set) var contentViewController: SheetContentViewController
     var overlayView = UIView()
@@ -159,7 +164,15 @@ public class SheetViewController: UIViewController {
     private var panOffset: CGFloat = 0
     private var panGestureRecognizer: InitialTouchPanGestureRecognizer!
     private var prePanHeight: CGFloat = 0
-    private var isPanning: Bool = false
+    private var isPanning: Bool = false {
+        didSet {
+            if !isPanning {
+                didCallPanBeyondThresholdForCurrentPan = false
+            }
+        }
+    }
+    private var isKeyboardDismissing = false
+    private var didCallPanBeyondThresholdForCurrentPan = false
     
     public var contentBackgroundColor: UIColor? {
         get { self.contentViewController.contentBackgroundColor }
@@ -357,6 +370,10 @@ public class SheetViewController: UIViewController {
     }
     
     @objc func panned(_ gesture: UIPanGestureRecognizer) {
+        guard !isKeyboardDismissing else {
+            self.isPanning = false
+            return
+        }
         let point = gesture.translation(in: gesture.view?.superview)
         if gesture.state == .began {
             self.firstPanPoint = point
@@ -403,6 +420,10 @@ public class SheetViewController: UIViewController {
                     self.transition.setPresentor(percentComplete: percent)
                     self.overlayView.alpha = 1 - percent
                     self.contentViewController.view.transform = CGAffineTransform(translationX: 0, y: offset)
+                    if !didCallPanBeyondThresholdForCurrentPan && (offset > panEventThreshold) {
+                        didPanBeyondThreshold?(self)
+                        didCallPanBeyondThresholdForCurrentPan = true
+                    }
                 } else {
                     self.contentViewController.view.transform = CGAffineTransform.identity
                 }
@@ -487,8 +508,17 @@ public class SheetViewController: UIViewController {
     }
     
     private func registerKeyboardObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDismissed(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidDismiss), name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow() {
+        isKeyboardDismissing = false
+        if options.shouldExpandWhenKeyboardAppears {
+            resize(to: .fullscreen)
+        }
     }
     
     @objc func keyboardShown(_ notification: Notification) {
@@ -500,7 +530,12 @@ public class SheetViewController: UIViewController {
     }
     
     @objc func keyboardDismissed(_ notification: Notification) {
+        isKeyboardDismissing = true
         self.adjustForKeyboard(height: 0, from: notification)
+    }
+    
+    @objc func keyboardDidDismiss() {
+        isKeyboardDismissing = false
     }
     
     private func adjustForKeyboard(height: CGFloat, from notification: Notification) {
