@@ -42,7 +42,7 @@ public struct SheetOptions {
     public var shrinkPresentingViewController = true
     /// Set true to be able to use the sheet view controller as a subview instead of a modal. Defaults to false.
     public var useInlineMode = false
-    public var shouldExpandWhenKeyboardAppears = false
+    public var shouldExpandWhenKeyboardMoves = false
     
     public var horizontalPadding: CGFloat = 0
     public var maxWidth: CGFloat?
@@ -78,7 +78,7 @@ public struct SheetOptions {
                 titleBarHorizontalPadding: CGFloat? = nil,
                 dismissButtonSize: CGSize? = nil,
                 dismissButtonImage: UIImage? = nil,
-                shouldExpandWhenKeyboardAppears: Bool? = nil
+                shouldExpandWhenKeyboardMoves: Bool? = nil
                 ) {
         let defaultOptions = SheetOptions.default
         self.pullBarHeight = pullBarHeight ?? defaultOptions.pullBarHeight
@@ -95,7 +95,7 @@ public struct SheetOptions {
         self.titleBarHorizontalPadding = titleBarHorizontalPadding ?? defaultOptions.titleBarHorizontalPadding
         self.dismissButtonSize = dismissButtonSize ?? defaultOptions.dismissButtonSize
         self.dismissButtonImage = dismissButtonImage ?? defaultOptions.dismissButtonImage
-        self.shouldExpandWhenKeyboardAppears = shouldExpandWhenKeyboardAppears ?? defaultOptions.shouldExpandWhenKeyboardAppears
+        self.shouldExpandWhenKeyboardMoves = shouldExpandWhenKeyboardMoves ?? defaultOptions.shouldExpandWhenKeyboardMoves
 
     }
     
@@ -111,7 +111,7 @@ public struct SheetOptions {
                 shrinkPresentingViewController: Bool? = nil,
                 useInlineMode: Bool? = nil,
                 minimumSpaceAbovePullBar: CGFloat? = nil,
-                shouldExpandWhenKeyboardAppears: Bool? = nil) {
+                shouldExpandWhenKeyboardMoves: Bool? = nil) {
         let defaultOptions = SheetOptions.default
         self.pullBarHeight = pullBarHeight ?? defaultOptions.pullBarHeight
         self.presentingViewCornerRadius = presentingViewCornerRadius ?? defaultOptions.presentingViewCornerRadius
@@ -120,7 +120,7 @@ public struct SheetOptions {
         self.useFullScreenMode = useFullScreenMode ?? defaultOptions.useFullScreenMode
         self.shrinkPresentingViewController = shrinkPresentingViewController ?? defaultOptions.shrinkPresentingViewController
         self.useInlineMode = useInlineMode ?? defaultOptions.useInlineMode
-        self.shouldExpandWhenKeyboardAppears = shouldExpandWhenKeyboardAppears ?? defaultOptions.shouldExpandWhenKeyboardAppears
+        self.shouldExpandWhenKeyboardMoves = shouldExpandWhenKeyboardMoves ?? defaultOptions.shouldExpandWhenKeyboardMoves
     }
 }
 

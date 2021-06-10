@@ -516,7 +516,7 @@ public class SheetViewController: UIViewController {
     
     @objc func keyboardWillShow() {
         isKeyboardDismissing = false
-        if options.shouldExpandWhenKeyboardAppears {
+        if options.shouldExpandWhenKeyboardMoves {
             resize(to: .fullscreen)
         }
     }
@@ -536,6 +536,9 @@ public class SheetViewController: UIViewController {
     
     @objc func keyboardDidDismiss() {
         isKeyboardDismissing = false
+        if options.shouldExpandWhenKeyboardMoves {
+            resize(to: .fullscreen)
+        }
     }
     
     private func adjustForKeyboard(height: CGFloat, from notification: Notification) {
